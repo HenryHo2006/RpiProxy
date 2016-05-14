@@ -1,29 +1,29 @@
 # RpiProxy
 Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clean dns/proxy service
 
-说明：工作目录在/home/pi下面
-说明：用su取得root权限，我下面的命令不再加sudo前缀
-说明：我的安装配置都是按systemd系统的，较老的系统不适用
+> 说明：工作目录在/home/pi下面  
+> 说明：用su取得root权限，我下面的命令不再加sudo前缀  
+> 说明：我的安装配置都是按systemd系统的，较老的系统不适用  
 
-1.1、下载/编译/打包/安装shadowsocks-libev
+## 1.1、下载/编译/打包/安装shadowsocks-libev
 
-apt-get update
-apt-get install git build-essential autoconf libtool libssl-dev \
-    gawk debhelper dh-systemd init-system-helpers pkg-config
-git clone https://github.com/shadowsocks/shadowsocks-libev.git
-cd shadowsocks-libev
-dpkg-buildpackage -us -uc -i
-cd ..
-#下面这行版本号可能不同
-dpkg -i  shadowsocks-libev_2.4.6-1_armhf.deb
+    apt-get update  
+    apt-get install git build-essential autoconf libtool libssl-dev \  
+        gawk debhelper dh-systemd init-system-helpers pkg-config  
+    git clone https://github.com/shadowsocks/shadowsocks-libev.git  
+    cd shadowsocks-libev  
+    dpkg-buildpackage -us -uc -i  
+    cd ..  
+     //下面这行版本号可能不同  
+    dpkg -i  shadowsocks-libev_2.4.6-1_armhf.deb  
 
-这些步骤若有问题请参阅https://github.com/shadowsocks/shadowsocks-libev
+    这些步骤若有问题请参阅https://github.com/shadowsocks/shadowsocks-libev
 
-1.2、禁用shadowsocks-libev-server服务，这个服务默认是打开的
+## 1.2、禁用shadowsocks-libev-server服务，这个服务默认是打开的
 systemctl stop shadowsocks-libev.service
 systemctl disable shadowsocks-libev.service
 
-1.3、配置启动shadowsocks-libev-redir服务
+## 1.3、配置启动shadowsocks-libev-redir服务
 
 编辑 /etc/shadowsocks-libev/config.json
 {
