@@ -134,8 +134,8 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
     用下面这句检查运行状态
     systemctl status dnsmasq
 
-另外，发现dnsmasq有个bug，默认选项local-service的本意是只提供服务给同一子网的客户机，但我发现他有时不能正确分辨，需要禁用
-     vi /etc/init.d/dnsmasq
-    注释掉这一行
-    DNSMASQ_OPTS="$DNSMASQ_OPTS --local-service"
+另外，发现dnsmasq有个bug，默认选项local-service的本意是只提供服务给同一子网的客户机，但我发现他有时不能正确分辨，需要禁用  
+     vi /etc/init.d/dnsmasq  
+    注释掉这一行  
+    DNSMASQ_OPTS="$DNSMASQ_OPTS --local-service"  
 
