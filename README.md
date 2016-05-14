@@ -1,5 +1,13 @@
-# RpiProxy
+﻿# RpiProxy
 Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clean dns/proxy service
+> 前言：  
+> 　　书籍是人类进步的阶梯，墙是阻碍人类进步的陷阱   --- 高尔基·马克西姆·方·滨兴
+>  
+> 　　翻墙的最佳姿势，当然是不在电脑/手机/pad上安装任何软件，不更改任何设置，就能访问到任何网址，墙变得透明了。
+> 实现这个目标主要有两种做法：
+1. 刷路由器固件，用OpenWrt加上其它软件。这个方式适合爱折腾的玩家，也有上网不稳定的风险存在。
+2. 用一台专用电脑充当网关/DNS服务器，安装设置上专用软件。这种方式优点很多，还可以出差时随时携带。要说低成本电脑，
+当然要首推树莓派了。本文就是专门介绍如何让树莓派做为透明翻墙网关。已经在Raspbian(Jiessie)和OSMC系统下面测试通过了。
 
 > 说明：工作目录在/home/pi下面  
 > 说明：用su取得root权限，我下面的命令不再加sudo前缀  
