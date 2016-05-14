@@ -14,121 +14,128 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
     cd shadowsocks-libev  
     dpkg-buildpackage -us -uc -i  
     cd ..  
-     //下面这行版本号可能不同  
+    //下面这行版本号可能不同  
     dpkg -i  shadowsocks-libev_2.4.6-1_armhf.deb  
 
     这些步骤若有问题请参阅https://github.com/shadowsocks/shadowsocks-libev
 
 ## 1.2、禁用shadowsocks-libev-server服务，这个服务默认是打开的
-systemctl stop shadowsocks-libev.service
-systemctl disable shadowsocks-libev.service
+
+    systemctl stop shadowsocks-libev.service
+    systemctl disable shadowsocks-libev.service
 
 ## 1.3、配置启动shadowsocks-libev-redir服务
 
-编辑 /etc/shadowsocks-libev/config.json
-{
-    "server":"境外shadowsocks服务器ip地址",
-    "server_port":境外shadowsocks服务器端口,
-    "local_address": "0.0.0.0",
-    "local_port":1080,
-    "password":"境外shadowsocks服务密码",
-    "timeout":3000,
-    "method":"aes-256-cfb"
-}
+    vi /etc/shadowsocks-libev/config.json
+    格式如下：
+    {
+        "server":"境外shadowsocks服务器ip地址",
+        "server_port":境外shadowsocks服务器端口,
+        "local_address": "0.0.0.0",
+        "local_port":1080,
+        "password":"境外shadowsocks服务密码",
+        "timeout":3000,
+        "method":"aes-256-cfb"
+    }
 
-mv /lib/systemd/system/shadowsocks-libev-redir@.service /lib/systemd/system/shadowsocks-libev-redir.service
-编辑 /lib/systemd/system/shadowsocks-libev-redir.service
-注意这行：ExecStart=/usr/bin/ss-redir -c /etc/shadowsocks-libev/config.json
-systemctl daemon-reload
-systemctl enable shadowsocks-libev-redir
-systemctl start shadowsocks-libev-redir
-#用下面这句检查运行状态
-systemctl status shadowsocks-libev-redir
+    mv /lib/systemd/system/shadowsocks-libev-redir@.service /lib/systemd/system/shadowsocks-libev-redir.service
+    vi /lib/systemd/system/shadowsocks-libev-redir.service
+    注意这行：ExecStart=/usr/bin/ss-redir -c /etc/shadowsocks-libev/config.json
+    systemctl daemon-reload
+    systemctl enable shadowsocks-libev-redir
+    systemctl start shadowsocks-libev-redir
+    用下面这句检查运行状态
+    systemctl status shadowsocks-libev-redir
 
-1.4、配置启动shadowsocks-libev-tunnel服务
-cp /etc/shadowsocks-libev/config.json /etc/shadowsocks-libev/config-tunnel.json
-编辑 /etc/shadowsocks-libev/config-tunnel.json
-{
-    "server":"境外shadowsocks服务器ip地址",
-    "server_port":境外shadowsocks服务器端口,
-    "local_address": "127.0.0.1",
-    "local_port":25353,
-    "password":"境外shadowsocks服务密码",
-    "timeout":3000,
-    "method":"aes-256-cfb"
-}
-mv /lib/systemd/system/shadowsocks-libev-tunnel@.service /lib/systemd/system/shadowsocks-libev-tunnel.service
-编辑 /lib/systemd/system/shadowsocks-libev-tunnel.service
-注意这行：ExecStart=/usr/bin/ss-tunnel -c /etc/shadowsocks-libev/config-tunnel.json -L 8.8.4.4:53 -u
-systemctl daemon-reload
-systemctl enable shadowsocks-libev-tunnel
-systemctl start shadowsocks-libev-tunnel
-#用下面这句检查运行状态
-systemctl status shadowsocks-libev-tunnel
+## 1.4、配置启动shadowsocks-libev-tunnel服务
 
-2.1、下载/编译/安装chinadns
-wget https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz
-tar -zxf chinadns-1.3.2.tar.gz
-cd chinadns-1.3.2
-./configure
-make
-make install
+    cp /etc/shadowsocks-libev/config.json /etc/shadowsocks-libev/config-tunnel.json
+    vi /etc/shadowsocks-libev/config-tunnel.json
+    {
+        "server":"境外shadowsocks服务器ip地址",
+        "server_port":境外shadowsocks服务器端口,
+        "local_address": "127.0.0.1",
+        "local_port":25353,
+        "password":"境外shadowsocks服务密码",
+        "timeout":3000,
+        "method":"aes-256-cfb"
+    }
+    mv /lib/systemd/system/shadowsocks-libev-tunnel@.service /lib/systemd/system/shadowsocks-libev-tunnel.service
+    vi /lib/systemd/system/shadowsocks-libev-tunnel.service
+    注意这行：ExecStart=/usr/bin/ss-tunnel -c /etc/shadowsocks-libev/config-tunnel.json -L 8.8.4.4:53 -u
+    systemctl daemon-reload
+    systemctl enable shadowsocks-libev-tunnel
+    systemctl start shadowsocks-libev-tunnel
+    用下面这句检查运行状态
+    systemctl status shadowsocks-libev-tunnel
 
-2.2、配置启动chinadns服务
+## 2.1、下载/编译/安装chinadns
 
-编写/lib/systemd/system/chinadns.service
-[Unit]
-Description=chinaDNS service
+    wget https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz
+    tar -zxf chinadns-1.3.2.tar.gz
+    cd chinadns-1.3.2
+    ./configure
+    make
+    make install
 
-[Service]
-ExecStart=/usr/local/bin/chinadns -v -m -c /usr/local/share/chnroute.txt -l /usr/local/share/iplist.txt -p 53 -s "114.114.114.114,223.5.5.5,127.0.0.1:25353"
-Restart=on-failure
-RestartSec=42s
+## 2.2、配置启动chinadns服务
 
-[Install]
-WantedBy=multi-user.target
+    vi /lib/systemd/system/chinadns.service
+    格式如下：
+    [Unit]
+    Description=chinaDNS service
+    
+    [Service]
+    ExecStart=/usr/local/bin/chinadns -v -m -c /usr/local/share/chnroute.txt -l /usr/local/share/iplist.txt -p 53 -s "114.114.114.114,223.5.5.5,127.0.0.1:25353"
+    Restart=on-failure
+    RestartSec=42s
+    
+    [Install]
+    WantedBy=multi-user.target
 
-systemctl daemon-reload
-systemctl enable chinadns
-systemctl start chinadns
-#用下面这句检查运行状态
-systemctl status chinadns
+    systemctl daemon-reload
+    systemctl enable chinadns
+    systemctl start chinadns
+    用下面这句检查运行状态
+    systemctl status chinadns
 
-3.1 设置nat转发规则
-编辑/etc/sysctl.conf
-net.ipv4.ip_forward = 1
-生效：sysctl -p /etc/sysctl.conf
-下载本项目文件/etc/shadowsocks-libev/iptables.up.rules
-修改你自己的Shadowsocks服务器ip
-编辑/etc/network/if-pre-up.d/iptables文件
-#!/bin/bash
-/sbin/iptables-restore < /etc/shadowsocks-libev/iptables.up.rules
-chmod +x /etc/network/if-pre-up.d/iptables
+## 3.1 设置nat转发规则
 
-注意：raspberry PI的发行版本OSMC中，不支持网络接口链接/断开脚本，做为临时办法，放到rc.local中执行
+    vi /etc/sysctl.conf
+    注意这句：net.ipv4.ip_forward = 1
+    sysctl -p /etc/sysctl.conf
+    下载本项目文件/etc/shadowsocks-libev/iptables.up.rules
+    修改你自己的Shadowsocks服务器ip
+    vi /etc/network/if-pre-up.d/iptables
+        #!/bin/bash
+        /sbin/iptables-restore < /etc/shadowsocks-libev/iptables.up.rules
+    chmod +x /etc/network/if-pre-up.d/iptables
 
-4.1、chinadns让出53端口(可选)
-systemctl stop chinadns
-修改 /lib/systemd/system/chinadns.service
-注意下面这句，监听端口变为15353，因为53端口(dns服务默认端口)让给了dnsmasq
-ExecStart=/usr/local/bin/chinadns -v -m -c /usr/local/share/chnroute.txt -l /usr/local/share/iplist.txt -p 15353 -s "114.114.114.114,223.5.5.5,127.0.0.1:25353"
-systemctl daemon-reload
-systemctl start chinadns
-#用下面这句检查运行状态
-systemctl status chinadns
+    **注意：raspberry PI的发行版本OSMC中，不支持网络接口链接/断开脚本，做为临时办法，放到rc.local中执行
 
-4.2、安装设置dnsmasq
-apt-get install dnsmasq
-编辑/etc/dnsmasq.conf
-no-resolv
-server=127.0.0.1#15353
-systemctl restart dnsmasq
-#用下面这句检查运行状态
-systemctl status dnsmasq
+## 4.1、chinadns让出53端口(可选)
+
+    systemctl stop chinadns
+    vi /lib/systemd/system/chinadns.service
+    注意下面这句，监听端口变为15353，因为53端口(dns服务默认端口)让给了dnsmasq
+     ExecStart=/usr/local/bin/chinadns -v -m -c /usr/local/share/chnroute.txt -l /usr/local/share/iplist.txt -p 15353 -s "114.114.114.114,223.5.5.5,127.0.0.1:25353"
+    systemctl daemon-reload
+    systemctl start chinadns
+    用下面这句检查运行状态
+    systemctl status chinadns
+
+## 4.2、安装设置dnsmasq(可选)
+
+    apt-get install dnsmasq
+    vi /etc/dnsmasq.conf
+        no-resolv
+        server=127.0.0.1#15353
+    systemctl restart dnsmasq
+    用下面这句检查运行状态
+    systemctl status dnsmasq
 
 另外，发现dnsmasq有个bug，默认选项local-service的本意是只提供服务给同一子网的客户机，但我发现他有时不能正确分辨，需要禁用
-编辑/etc/init.d/dnsmasq
-注释掉这一行
-#DNSMASQ_OPTS="$DNSMASQ_OPTS --local-service"
-
+     vi /etc/init.d/dnsmasq
+    注释掉这一行
+    DNSMASQ_OPTS="$DNSMASQ_OPTS --local-service"
 
