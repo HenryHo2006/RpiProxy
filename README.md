@@ -20,7 +20,7 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
         gawk debhelper dh-systemd init-system-helpers pkg-config  
     git clone https://github.com/shadowsocks/shadowsocks-libev.git  
     cd shadowsocks-libev  
-    dpkg-buildpackage -us -uc -i  
+    dpkg-buildpackage -b -us -uc -i
     cd ..  
     //下面这行版本号可能不同  
     dpkg -i  shadowsocks-libev_2.4.6-1_armhf.deb  
