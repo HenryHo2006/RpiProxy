@@ -13,6 +13,8 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
 > 说明：用su取得root权限，我下面的命令不再加sudo前缀  
 > 说明：我的安装配置都是按systemd系统的，较老的系统不适用  
 
+![系统架构图](systems.jpg "系统架构图")
+
 ## 1.1、下载/编译/打包/安装shadowsocks-libev
 
     apt-get update  
