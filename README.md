@@ -28,7 +28,8 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
     dpkg -i  shadowsocks-libev_2.4.6-1_armhf.deb  
 
     这些步骤若有问题请参阅https://github.com/shadowsocks/shadowsocks-libev
-
+    2.4.8版本后，需要禁止asciidoc样式的帮助文档生成：http://lixingcong.github.io/2016/07/20/compile-with-no-doc-for-shadowsocks/
+    
 ## 1.2、禁用shadowsocks-libev-server服务，这个服务默认是打开的
 
     systemctl stop shadowsocks-libev.service
