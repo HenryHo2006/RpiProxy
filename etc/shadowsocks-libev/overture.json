@@ -1,0 +1,38 @@
+{
+  "BindAddress": ":53",
+  "PrimaryDNS": [
+    {
+      "Name": "aliDNS",
+      "Address": "114.114.115.115:53",
+      "Protocol": "udp",
+      "SOCKS5Address": "",
+      "Timeout": 6,
+      "EDNSClientSubnet": {
+        "Policy": "disable",
+        "ExternalIP": ""
+      }
+    }
+  ],
+  "AlternativeDNS": [
+    {
+      "Name": "googleDNS",
+      "Address": "8.8.8.8:53",
+      "Protocol": "tcp",
+      "SOCKS5Address": "127.0.0.1:1080",
+      "Timeout": 6,
+      "EDNSClientSubnet": {
+        "Policy": "disable",
+        "ExternalIP": ""
+      }
+    }
+  ],
+  "OnlyPrimaryDNS": false,
+  "RedirectIPv6Record": false,
+  "IPNetworkFile": "/etc/shadowsocks-libev/china_ip_list.txt",
+  "DomainFile": "/etc/shadowsocks-libev/gfwlist.txt",
+  "DomainBase64Decode": true,
+  "HostsFile": "/usr/bin/overture/hosts_sample",
+  "MinimumTTL": 86400,
+  "CacheSize" : 604800,
+  "RejectQtype": [255]
+}
