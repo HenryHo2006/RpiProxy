@@ -14,10 +14,10 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
 > 说明：我的安装配置都是按systemd系统的，较老的系统不适用  
 
 > v2更新说明：本文的第一版写在2016年，这段时间内：
->   shadowsocks升了很多版本，修正了一些bug，增加了更多的加密方式，用起来速度更快一些
->   chinadns已经停止维护很久了，ss-tunnel转发dns查询的模式也不太稳定，因此决定切换到[overture](https://github.com/shawn1m/overture)上去，
->   [overture](https://github.com/shawn1m/overture)自带dns分流查询、TTL、缓存，因此个人使用也没必要安装dnsmasq了，
->   整个架构就由shadowsocks-libev + overture构成，安装维护更简单了
+shadowsocks升了很多版本，修正了一些bug，增加了更多的加密方式，用起来速度更快一些
+chinadns已经停止维护很久了，ss-tunnel转发dns查询的模式也不太稳定，因此决定切换到[overture](https://github.com/shawn1m/overture)上去，
+[overture](https://github.com/shawn1m/overture)自带dns分流查询、TTL、缓存，因此个人使用也没必要安装dnsmasq了，
+整个架构就由shadowsocks-libev + overture构成，安装维护更简单了
 
 ![系统架构图](systems.jpg "系统架构图")
 
