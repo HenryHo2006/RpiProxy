@@ -152,7 +152,7 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
     接下来配置为自动启动的服务：  
     
     vi /lib/systemd/system/overture.service  
-    格式如下：
+    格式如下：  
     [Unit]
     Description=overture service
     
