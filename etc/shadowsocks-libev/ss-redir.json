@@ -1,5 +1,5 @@
 {
-    "server":"*.*.*>*",
+    "server":"*.*.*.*",
     "server_port":*,
     "local_address": "0.0.0.0",
     "local_port":8888,
