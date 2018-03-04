@@ -13,29 +13,29 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
 > 说明：用su取得root权限，我下面的命令不再加sudo前缀  
 > 说明：我的安装配置都是按systemd系统的，较老的系统不适用  
 
-> v2更新说明：本文的第一版写在2016年，这段时间内：
-shadowsocks升了很多版本，修正了一些bug，增加了更多的加密方式，用起来速度更快一些
-chinadns已经停止维护很久了，ss-tunnel转发dns查询的模式也不太稳定，因此决定切换到[overture](https://github.com/shawn1m/overture)上去，
-[overture](https://github.com/shawn1m/overture)自带dns分流查询、TTL、缓存，因此个人使用也没必要安装dnsmasq了，
-整个架构就由shadowsocks-libev + overture构成，安装维护更简单了
+> v2更新说明：本文的第一版写在2016年，这段时间内：  
+  shadowsocks升了很多版本，修正了一些bug，增加了更多的加密方式，用起来速度更快一些  
+  chinadns已经停止维护很久了，ss-tunnel转发dns查询的模式也不太稳定，因此决定切换到[overture](https://github.com/shawn1m/overture)上去  
+  [overture](https://github.com/shawn1m/overture)自带dns分流查询、TTL、缓存，因此个人使用也没必要安装dnsmasq了  
+  整个架构就由shadowsocks-libev + overture构成，安装维护更简单了  
 
 ![系统架构图](systems.jpg "系统架构图")
 
 ## 1.1、安装shadowsocks-libev
-    vps服务端的安装教程网上汗牛充栋，这里就不详述了
-    但在树莓派上安装shadowsocks-libev最新版本却没那么容易，如果想自己编译安装，shadowsocks-libev的依赖库极多，
-    又有版本要求，比较繁琐，推荐从[Debian Backports](https://backports.debian.org/Instructions/)上安装最新版本
+    vps服务端的安装教程网上汗牛充栋，这里就不详述了  
+    但在树莓派上安装shadowsocks-libev最新版本却没那么容易，如果想自己编译安装，shadowsocks-libev的依赖库极多，  
+    又有版本要求，比较繁琐，推荐从[Debian Backports](https://backports.debian.org/Instructions/)上安装最新版本  
     
-    vi /etc/apt/sources.list
-    jessie版本加这行：
-         deb http://ftp.debian.org/debian jessie-backports main
-    stretch版本加这行：
-         deb http://ftp.debian.org/debian stretch-backports main
-    apt-get update
-    stretch版本执行这句：
-         apt-get install shadowsocks-libev -t jessie-backports
-    jessie版本执行这句：
-         apt-get install shadowsocks-libev -t stretch-backports
+    vi /etc/apt/sources.list  
+    jessie版本加这行：  
+         deb http://ftp.debian.org/debian jessie-backports main  
+    stretch版本加这行：  
+         deb http://ftp.debian.org/debian stretch-backports main  
+    apt-get update  
+    stretch版本执行这句：  
+         apt-get install shadowsocks-libev -t jessie-backports  
+    jessie版本执行这句：  
+         apt-get install shadowsocks-libev -t stretch-backports  
     
 ## 1.2、禁用shadowsocks-libev-server服务，这个服务默认是打开的
 
@@ -44,52 +44,52 @@ chinadns已经停止维护很久了，ss-tunnel转发dns查询的模式也不太
 
 ## 1.3、配置启动shadowsocks-libev-redir服务
 
-    vi /etc/shadowsocks-libev/ss-redir.json
-    格式如下：
-    {
-        "server":"境外shadowsocks服务器ip地址",
-        "server_port":境外shadowsocks服务器端口,
-        "local_address": "0.0.0.0",
-        "local_port":8888,
-        "password":"境外shadowsocks服务密码",
-        "timeout":3000,
-        "method":"chacha20-ietf-poly1305"
-    }
+    vi /etc/shadowsocks-libev/ss-redir.json  
+    格式如下：  
+    {  
+        "server":"境外shadowsocks服务器ip地址",  
+        "server_port":境外shadowsocks服务器端口,  
+        "local_address": "0.0.0.0",  
+        "local_port":8888,  
+        "password":"境外shadowsocks服务密码",  
+        "timeout":3000,  
+        "method":"chacha20-ietf-poly1305"  
+    }  
 
-    mv /lib/systemd/system/shadowsocks-libev-redir@.service /lib/systemd/system/shadowsocks-libev-redir.service
-    vi /lib/systemd/system/shadowsocks-libev-redir.service
-    注意这行：ExecStart=/usr/bin/ss-redir -c /etc/shadowsocks-libev/ss-redir.json
-    systemctl daemon-reload
-    systemctl enable shadowsocks-libev-redir
-    systemctl start shadowsocks-libev-redir
-    用下面这句检查运行状态
-    systemctl status shadowsocks-libev-redir
+    mv /lib/systemd/system/shadowsocks-libev-redir@.service /lib/systemd/system/shadowsocks-libev-redir.service  
+    vi /lib/systemd/system/shadowsocks-libev-redir.service  
+    注意这行：ExecStart=/usr/bin/ss-redir -c /etc/shadowsocks-libev/ss-redir.json  
+    systemctl daemon-reload  
+    systemctl enable shadowsocks-libev-redir  
+    systemctl start shadowsocks-libev-redir  
+    用下面这句检查运行状态  
+    systemctl status shadowsocks-libev-redir  
 
-## 1.4、配置启动shadowsocks-libev-local服务
+## 1.4、配置启动shadowsocks-libev-local服务  
 
-    注意：ss-redir是透明代理（转发）服务，ss-local是socket5转发服务，这个不同需要很清楚
-          在本文中，8888端口用于透明代理，1080端口用于socket5转发
-          ss-local给overture使用，用于向境外dns服务器查询
+    注意：ss-redir是透明代理（转发）服务，ss-local是socket5转发服务，这个不同需要很清楚  
+          在本文中，8888端口用于透明代理，1080端口用于socket5转发  
+          ss-local给overture使用，用于向境外dns服务器查询  
           
-    cp /etc/shadowsocks-libev/ss-redir.json /etc/shadowsocks-libev/ss-local.json
-    vi /etc/shadowsocks-libev/ss-local.json
-    {
-        "server":"境外shadowsocks服务器ip地址",
-        "server_port":境外shadowsocks服务器端口,
-        "local_address": "127.0.0.1",
-        "local_port":1080,
-        "password":"境外shadowsocks服务密码",
-        "timeout":3000,
-        "method":"chacha20-ietf-poly1305"
-    }
-    mv /lib/systemd/system/shadowsocks-libev-local@.service /lib/systemd/system/shadowsocks-libev-local.service
-    vi /lib/systemd/system/shadowsocks-libev-local.service
-    注意这行：ExecStart=/usr/bin/ss-local -c /etc/shadowsocks-libev/ss-local.json
-    systemctl daemon-reload
-    systemctl enable shadowsocks-libev-local
-    systemctl start shadowsocks-libev-local
-    用下面这句检查运行状态
-    systemctl status shadowsocks-libev-local
+    cp /etc/shadowsocks-libev/ss-redir.json /etc/shadowsocks-libev/ss-local.json  
+    vi /etc/shadowsocks-libev/ss-local.json  
+    {  
+        "server":"境外shadowsocks服务器ip地址",  
+        "server_port":境外shadowsocks服务器端口,  
+        "local_address": "127.0.0.1",  
+        "local_port":1080,  
+        "password":"境外shadowsocks服务密码",  
+        "timeout":3000,  
+        "method":"chacha20-ietf-poly1305"  
+    }  
+    mv /lib/systemd/system/shadowsocks-libev-local@.service /lib/systemd/system/shadowsocks-libev-local.service  
+    vi /lib/systemd/system/shadowsocks-libev-local.service  
+    注意这行：ExecStart=/usr/bin/ss-local -c /etc/shadowsocks-libev/ss-local.json  
+    systemctl daemon-reload  
+    systemctl enable shadowsocks-libev-local  
+    systemctl start shadowsocks-libev-local  
+    用下面这句检查运行状态  
+    systemctl status shadowsocks-libev-local  
 
 ## 2.1、设置nat转发规则
 
@@ -107,7 +107,7 @@ chinadns已经停止维护很久了，ss-tunnel转发dns查询的模式也不太
 
 ## 3.1、安装配置启动overture服务
     
-    到https://github.com/shawn1m/overture下载安装，我的配置如下：
+    到https://github.com/shawn1m/overture下载安装，我的配置如下：  
     {
       "BindAddress": ":53",
       "PrimaryDNS": [
