@@ -108,50 +108,50 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
 ## 3.1、安装配置启动overture服务
     
     到https://github.com/shawn1m/overture下载安装，我的配置如下：  
-    {
-      "BindAddress": ":53",
-      "PrimaryDNS": [
-        {
-        "Name": "aliDNS",
-        "Address": "114.114.115.115:53",
-        "Protocol": "udp",
-        "SOCKS5Address": "",
-        "Timeout": 6,
-        "EDNSClientSubnet": {
-          "Policy": "disable",
-          "ExternalIP": ""
-          }
-        }
-       ],
-      "AlternativeDNS": [
-      {
-        "Name": "googleDNS",
-        "Address": "8.8.8.8:53",
-        "Protocol": "tcp",
-        "SOCKS5Address": "127.0.0.1:1080",
-        "Timeout": 6,
-        "EDNSClientSubnet": {
-          "Policy": "disable",
-          "ExternalIP": ""
-        }
-      }
-    ],
-    "OnlyPrimaryDNS": false,
-    "RedirectIPv6Record": false,
-    "IPNetworkFile": "/etc/shadowsocks-libev/china_ip_list.txt",
-    "DomainFile": "/etc/shadowsocks-libev/gfwlist.txt",
-    "DomainBase64Decode": true,
-    "HostsFile": "/usr/bin/overture/hosts_sample",
-    "MinimumTTL": 86400,
-    "CacheSize" : 604800,
-    "RejectQtype": [255]
-  }
+    {  
+      "BindAddress": ":53",  
+      "PrimaryDNS": [  
+        {  
+        "Name": "aliDNS",  
+        "Address": "114.114.115.115:53",  
+        "Protocol": "udp",  
+        "SOCKS5Address": "",  
+        "Timeout": 6,  
+        "EDNSClientSubnet": {  
+          "Policy": "disable",  
+          "ExternalIP": ""  
+          }  
+        }  
+       ],  
+      "AlternativeDNS": [  
+      {  
+        "Name": "googleDNS",  
+        "Address": "8.8.8.8:53",  
+        "Protocol": "tcp",  
+        "SOCKS5Address": "127.0.0.1:1080",  
+        "Timeout": 6,  
+        "EDNSClientSubnet": {  
+          "Policy": "disable",  
+          "ExternalIP": ""  
+        }  
+      }  
+    ],  
+    "OnlyPrimaryDNS": false,  
+    "RedirectIPv6Record": false,  
+    "IPNetworkFile": "/etc/shadowsocks-libev/china_ip_list.txt",  
+    "DomainFile": "/etc/shadowsocks-libev/gfwlist.txt",  
+    "DomainBase64Decode": true,  
+    "HostsFile": "/usr/bin/overture/hosts_sample",  
+    "MinimumTTL": 86400,  
+    "CacheSize" : 604800,  
+    "RejectQtype": [255]  
+  }  
     
-    注意：境外辅助dns服务器需要支持tcp，走socket5代理模式
-    配置中指定的地址段china_ip_list，域名单gfwlist，都是众所周知的github项目，可自行下载，本项目内也有提供
-    接下来配置为自动启动的服务：
+    注意：境外辅助dns服务器需要支持tcp，走socket5代理模式  
+    配置中指定的地址段china_ip_list，域名单gfwlist，都是众所周知的github项目，可自行下载，本项目内也有提供  
+    接下来配置为自动启动的服务：  
     
-    vi /lib/systemd/system/overture.service
+    vi /lib/systemd/system/overture.service  
     格式如下：
     [Unit]
     Description=overture service
