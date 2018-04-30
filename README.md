@@ -107,13 +107,13 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
 
 ## 3.1、安装配置启动overture服务
     
-    到https://github.com/shawn1m/overture下载安装，我的配置如下：  
+    到https://github.com/shawn1m/overture 下载安装，我的配置如下：  
     {  
       "BindAddress": ":53",  
       "PrimaryDNS": [  
         {  
         "Name": "aliDNS",  
-        "Address": "114.114.115.115:53",  
+        "Address": "223.5.5.5:53",  
         "Protocol": "udp",  
         "SOCKS5Address": "",  
         "Timeout": 6,  
