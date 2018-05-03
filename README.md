@@ -31,7 +31,17 @@ Make a Raspberry PI as a proxy route, work with shadowsocks server, provide clea
          deb http://ftp.debian.org/debian jessie-backports main  
     stretch版本加这行：  
          deb http://ftp.debian.org/debian stretch-backports main  
-    apt-get update  
+    
+    给这个源添加公钥，否则apt-get update会报错    
+    apt-get install dirmngr    
+
+    gpg --keyserver pgpkeys.mit.edu --recv-key  8B48AD6246925553    
+    gpg -a --export 8B48AD6246925553 | sudo apt-key add -    
+
+    gpg --keyserver pgpkeys.mit.edu --recv-key  7638D0442B90D010    
+    gpg -a --export 7638D0442B90D010 | sudo apt-key add -    
+    
+    apt-get update  
     stretch版本执行这句：  
          apt-get install shadowsocks-libev -t jessie-backports  
     jessie版本执行这句：  
